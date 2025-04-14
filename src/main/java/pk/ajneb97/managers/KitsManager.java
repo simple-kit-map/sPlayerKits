@@ -8,6 +8,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.potion.PotionEffect;
 import pk.ajneb97.PlayerKits2;
 import pk.ajneb97.configs.MainConfigManager;
 import pk.ajneb97.model.Kit;
@@ -21,6 +22,7 @@ import pk.ajneb97.utils.ActionUtils;
 import pk.ajneb97.utils.OtherUtils;
 import pk.ajneb97.utils.PlayerUtils;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class KitsManager {
@@ -76,6 +78,7 @@ public class KitsManager {
         }
 
         ItemStack[] inventoryContents = PlayerUtils.getAllInventoryContents(player);
+        Collection<PotionEffect> effects = player.getActivePotionEffects();
 
         KitItemManager kitItemManager = plugin.getKitItemManager();
         ArrayList<KitItem> items = new ArrayList<>();
@@ -110,6 +113,7 @@ public class KitsManager {
         kit.setDefaults(mainConfigManager.getNewKitDefault());
         kit.setAutoArmor(hasArmor);
         kit.setSaveOriginalItems(saveOriginalItems);
+        kit.setEffects(effects);
 
         kits.add(kit);
         plugin.getConfigsManager().getKitsConfigManager().saveConfig(kit);
@@ -159,6 +163,20 @@ public class KitsManager {
 
         if(kit == null){
             return PlayerKitsMessageResult.error(messagesFile.getString("kitDoesNotExists").replace("%kit%",kitName));
+        }
+
+        player.getInventory().setHelmet(new ItemStack (Material.AIR));
+        player.getInventory().setChestplate(new ItemStack (Material.AIR));
+        player.getInventory().setLeggings(new ItemStack (Material.AIR));
+        player.getInventory().setBoots(new ItemStack (Material.AIR));
+        player.setHealth(20);
+        player.setSaturation(20);
+        player.setFoodLevel(20);
+        player.setFireTicks(0);
+
+        for(PotionEffect effect : player.getActivePotionEffects())
+        {
+            player.removePotionEffect(effect.getType());
         }
 
         //Check properties
@@ -293,9 +311,9 @@ public class KitsManager {
             return PlayerKitsMessageResult.error(messagesFile.getString("noSpaceError"));
         }
 
-        if(clearInventory){
+//        if(clearInventory){
             player.getInventory().clear();
-        }
+//        }
 
         //Actions before
         sendKitActions(kit.getClaimActions(),player,true);
@@ -319,6 +337,15 @@ public class KitsManager {
                     player.getWorld().dropItemNaturally(player.getLocation(), item);
                 }else{
                     playerInventory.addItem(item);
+                }
+            }
+        }
+
+        Collection<PotionEffect> effects = kit.getEffects();
+        if (effects != null){
+            if (!effects.isEmpty()){
+                for(PotionEffect effect : effects){
+                    player.addPotionEffect(effect);
                 }
             }
         }

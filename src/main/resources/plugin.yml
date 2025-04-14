@@ -8,4 +8,4 @@ author: Ajneb97
 commands:
   kit:
     description: Main command of PlayerKits2
-    aliases: [kits,playerkits]
+    aliases: [kits,playerkits, kits, gkit, k]

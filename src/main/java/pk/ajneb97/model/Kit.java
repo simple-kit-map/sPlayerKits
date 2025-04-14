@@ -1,10 +1,12 @@
 package pk.ajneb97.model;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.potion.PotionEffect;
 import pk.ajneb97.model.item.KitItem;
 import pk.ajneb97.utils.PlayerUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class Kit {
     private String name;
@@ -18,6 +20,16 @@ public class Kit {
     private ArrayList<KitAction> errorActions;
     private boolean saveOriginalItems;
     private boolean allowPlaceholdersOnOriginalItems;
+
+    public Collection<PotionEffect> getEffects() {
+        return effects;
+    }
+
+    public void setEffects(Collection<PotionEffect> effects) {
+        this.effects = effects;
+    }
+
+    private Collection<PotionEffect> effects;
 
     private KitItem displayItemDefault;
     private KitItem displayItemNoPermission;

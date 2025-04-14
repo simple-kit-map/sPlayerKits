@@ -1,6 +1,7 @@
 package pk.ajneb97.configs;
 
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.potion.PotionEffect;
 import pk.ajneb97.PlayerKits2;
 import pk.ajneb97.managers.KitItemManager;
 import pk.ajneb97.model.Kit;
@@ -9,7 +10,12 @@ import pk.ajneb97.model.KitRequirements;
 import pk.ajneb97.model.item.KitItem;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.Collections.emptyList;
 
 public class KitsConfigManager {
     private ArrayList<CustomConfig> configFiles;
@@ -140,6 +146,11 @@ public class KitsConfigManager {
 
         FileConfiguration config = kitConfig.getConfig();
 
+        Collection<PotionEffect> effects = kit.getEffects();
+        if (effects == null){
+            effects = emptyList();
+        }
+        config.set("effects", effects.stream().collect(Collectors.toList()));
         config.set("cooldown",kit.getCooldown());
         config.set("one_time",kit.isOneTime());
         config.set("auto_armor",kit.isAutoArmor());
@@ -239,6 +250,9 @@ public class KitsConfigManager {
         boolean clearInventory = config.contains(mainPath+"clear_inventory") ? config.getBoolean(mainPath+"clear_inventory") : false;
         boolean saveOriginalItems = config.contains(mainPath+"save_original_items") ? config.getBoolean(mainPath+"save_original_items") : false;
         boolean allowPlaceholdersOnOriginalItems = config.contains(mainPath+"allow_placeholders_on_original_items") ? config.getBoolean(mainPath+"allow_placeholders_on_original_items") : false;
+        Collection<PotionEffect> effects = config.contains(mainPath+"effects") ? config.getList("effects").stream()
+                .map(obj -> (PotionEffect) obj)
+                .collect(Collectors.toList()) : emptyList();
 
         ArrayList<KitItem> items = new ArrayList<>();
         if(config.contains(mainPath+"items")){
@@ -290,6 +304,7 @@ public class KitsConfigManager {
         kit.setRequirements(kitRequirements);
         kit.setSaveOriginalItems(saveOriginalItems);
         kit.setAllowPlaceholdersOnOriginalItems(allowPlaceholdersOnOriginalItems);
+        kit.setEffects(effects);
 
         return kit;
     }

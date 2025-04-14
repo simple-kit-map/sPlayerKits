@@ -27,7 +27,7 @@ public class PlayerKits2 extends JavaPlugin {
     public static ServerVersion serverVersion;
 
     private KitItemManager kitItemManager;
-    private KitsManager kitsManager;
+    public KitsManager kitsManager;
     private DependencyManager dependencyManager;
     private ConfigsManager configsManager;
     private MessagesManager messagesManager;
