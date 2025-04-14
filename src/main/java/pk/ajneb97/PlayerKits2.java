@@ -77,7 +77,7 @@ public class PlayerKits2 extends JavaPlugin {
 
         PlayerKitsAPI api = new PlayerKitsAPI(this);
         if(getServer().getPluginManager().getPlugin("PlaceholderAPI") != null){
-            new ExpansionPlayerKits(this).register();
+            new ExpansionPlayerKits(this).canRegister();
         }
         Metrics metrics = new Metrics(this,19795);
 
