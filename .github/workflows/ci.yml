@@ -29,7 +29,13 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-    - name: Publish to GitHub Packages Apache Maven
-      run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
+    - name: Generate release tag
+      id: tag
+      run: echo "::set-output name=release_tag::Nightly_$(date +"%Y.%m.%d_%H-%M")"
+
+    - uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.tag.outputs.release_tag }}
+        fail_on_unmatched_files: true
+        files: |
+          ./target/PlayerKits2-1.0-SNAPSHOT.jar
